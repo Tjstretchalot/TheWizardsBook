@@ -4,7 +4,8 @@ import city.soi.platform.*;
 import java.awt.BorderLayout;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import javax.swing.JFrame;
+import javax.swing.JPanel;
+
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import java.io.ObjectOutputStream;
@@ -13,7 +14,7 @@ import org.jbox2d.common.Vec2;
 /**
  * A very basic platform game.
  */
-public class Game {
+public class Game extends JPanel {
 
     /** The player (a specialised Actor). */
     private Player player;
@@ -31,8 +32,6 @@ public class Game {
     private int levelCounter;
     // holds the current level value
     private GameLevel currentLevel;
-    // the window frame
-    private final JFrame frame = new JFrame("The Wizard's Book");
     private StatePanel statepanel;
     private String name;
     private Sound sound;
@@ -41,10 +40,6 @@ public class Game {
     /** Initialise a new Game. */
     public Game() {
             isOver = false;
-
-            // make the world
-            world = new World();
-            
             // make a player
             player = new Player(this);
             player.setGravityStrength(5);
@@ -55,7 +50,7 @@ public class Game {
             sound = new Sound("sound/main.wav");
             sound.loopSound();
             
-            name =(String)JOptionPane.showInputDialog(frame, "Enter your name: ", "Enter Name", JOptionPane.PLAIN_MESSAGE);
+            name =(String)JOptionPane.showInputDialog(null, "Enter your name: ", "Enter Name", JOptionPane.PLAIN_MESSAGE); // won't work in applets, use something else
             
             //LevelCount
             levelCounter = 0;
@@ -79,20 +74,13 @@ public class Game {
             //view.setDrawStats(true); // uncomment this line to show simulation stats in game display
 
             // add some keyboard handling
-            frame.addKeyListener(new KeyHandler(this));
-            // quit the application when the game window is closed
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            addKeyListener(new KeyHandler(this));
             // display the world in the window
-            frame.add(view);
-            // don't let the game window be resized
-            frame.setResizable(false);
-            // size the game window to fit the world view
-            frame.pack();
+            add(view);
             // make the window visible
-            frame.setVisible(true);
             
             statepanel = new StatePanel(this);
-            frame.add(statepanel, BorderLayout.SOUTH);
+            add(statepanel, BorderLayout.SOUTH);
                 
             // start!
             world.start();
@@ -130,7 +118,7 @@ public class Game {
                 ObjectOutputStream out = new ObjectOutputStream(fos);
                 out.writeObject(score);
             }       
-            JOptionPane.showMessageDialog(frame, "Your score has been saved.");
+            JOptionPane.showMessageDialog(null, "Your score has been saved."); // Won't work in applets, use something else
             world.pause();
             isOver = true;
             System.exit(0);
@@ -155,16 +143,7 @@ public class Game {
     	return name;
     }
     
-    public JFrame getFrame() {
-        return frame;
-    }
-    
     public Bat getBat() {
         return bat;
-    }
-    
-    /** Play a game. */
-    public static void main(String[] args) {
-        new Game();
     }
 }
